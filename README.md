@@ -1,6 +1,7 @@
 # Docology - RAG Document Q&A System
 
 A production-ready MVP for document question-answering using Retrieval-Augmented Generation (RAG) with Gemini 1.5 Pro, ChromaDB, and local embeddings.
+This project uses LangChain alongside a custom RAG pipeline to handle retrieval and orchestration when enabled. With the LangChain Chroma wrapper, document similarity search is powered by LangChain while Gemini handles answer generation.
 
 ## Features
 
@@ -247,6 +248,47 @@ For issues and questions:
 2. Review the API documentation at http://localhost:8000/docs
 3. Check browser console for frontend errors
 4. Check backend logs for server errors
+
+**Free Deployment (Backend + Frontend)**
+You can deploy Docology for free using a combination of Render (backend) and Netlify/Vercel (frontend). Remember: do not commit your .env; set environment variables in the hosting dashboards.
+
+1) Backend (Render Free Web Service)
+Service type: Web Service
+Repository subdirectory: backend/
+Runtime: Python 3.10+
+Build command: pip install -r requirements.txt
+Start command: uvicorn main:app --host 0.0.0.0 --port 8000
+Environment variables:
+GOOGLE_API_KEY = your_google_api_key
+GEMINI_MODEL = gemini-1.5-pro-latest
+CHROMA_DIR = /data/persisted
+UPLOAD_DIR = /data/uploads
+USE_LANGCHAIN = false
+Persistent storage:
+If available, attach a free persistent disk and map it to /data so ChromaDB and uploads survive restarts. On purely ephemeral free tiers, the index may reset on redeploy.
+2) Frontend (Netlify or Vercel Free)
+Option A: Netlify
+
+Project directory: frontend/
+Build command: npm install && npm run build
+Publish directory: frontend/dist
+Environment variables:
+VITE_API_BASE = https://YOUR-BACKEND-ON-RENDER.onrender.com
+Option B: Vercel
+
+Project directory: frontend/
+Framework preset: Vite + React (or “Other” with custom settings)
+Build command: npm install && npm run build
+Output directory: frontend/dist
+Environment variables:
+VITE_API_BASE = https://YOUR-BACKEND-ON-RENDER.onrender.com
+3) CORS and Connectivity
+Ensure the FastAPI CORS configuration allows your frontend domain (Netlify/Vercel URL). If in doubt during testing, temporarily allow all origins and then restrict to your exact domain once verified.
+4) Post‑Deploy Checklist
+Open the frontend URL and ask a question.
+Verify document upload works and citations appear.
+Confirm environment variables are set correctly on both backend and frontend.
+If using free ephemeral storage, expect the vector index to reset when the backend redeploys. For persistence, attach a disk (if the platform supports it) and keep CHROMA_DIR/UPLOAD_DIR on that disk.
 
 ---
 
