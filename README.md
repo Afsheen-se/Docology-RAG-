@@ -31,7 +31,7 @@ A production-ready MVP for document question-answering using Retrieval-Augmented
 
 ## Prerequisites
 
-- Python 3.8+
+- Python 3.13+
 - Node.js 16+
 - Google AI API Key (free tier)
 
